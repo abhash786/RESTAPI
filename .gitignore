@@ -3,3 +3,8 @@
 ################################################################################
 
 /ADM/.vs/ADM
+/.vs
+/ADM/RManjusha.RestServices/.azure
+/ADM/RManjusha.RestServices/Logs
+/ADM/RManjusha.RestServices/obj
+/ADM/RManjusha.RestServices/Upload
