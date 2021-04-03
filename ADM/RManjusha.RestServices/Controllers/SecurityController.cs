@@ -38,9 +38,6 @@ namespace RManjusha.RestServices.Controllers
                 if (auth != null)
                 {
                     auth.Password = string.Empty;
-                    //if (auth.CompanyLogoImage != null && !auth.CompanyLogoImage.Contains("https://", System.StringComparison.InvariantCultureIgnoreCase))
-                    //    auth.CompanyLogoImage = $"https://{Request.Host.Value}/userfiles/{auth.CompanyLogoImage}";
-
                     response = StatusCode(StatusCodes.Status200OK, new { token = _jwtHelper.GenerateJSONWebToken(auth.EmpCode), User = auth });
                 }
                 else
@@ -56,14 +53,6 @@ namespace RManjusha.RestServices.Controllers
                 if (auth != null)
                 {
                     auth.Password = string.Empty;
-                    //if (auth.SeekerImage !=null && !auth.SeekerImage.Contains("https://", System.StringComparison.InvariantCultureIgnoreCase))
-                    //{
-                    //    auth.SeekerImage = $"https://{Request.Host.Value}/userfiles/{auth.SeekerImage}";
-                    //}
-                    //if (auth.ResumeCv != null && !auth.ResumeCv.Contains("https://", System.StringComparison.InvariantCultureIgnoreCase))
-                    //{
-                    //    auth.ResumeCv = $"https://{Request.Host.Value}/userfiles/{auth.ResumeCv}";
-                    //}
                     response = StatusCode(StatusCodes.Status200OK, new { token = _jwtHelper.GenerateJSONWebToken(auth.SkrCode), User = auth });
                 }
                 else

@@ -51,6 +51,7 @@ namespace RManjusha.RestServices
             services.AddScoped<RManjushaContext>();
             services.AddSingleton(settings);
             services.AddTransient(typeof(SecurityManager), typeof(SecurityManager));
+            services.AddTransient(typeof(BlobStorageService), typeof(BlobStorageService));
             services.AddTransient(typeof(JWTHelper), typeof(JWTHelper));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             // Get JWT Token Settings from JSON file

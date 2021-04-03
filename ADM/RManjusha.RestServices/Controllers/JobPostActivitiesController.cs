@@ -97,7 +97,7 @@ namespace RManjusha.RestServices.Controllers
                             MinExp = job.MinExp,
                             MaxExp = job.MaxExp,
                             CompanyName = job.IsCompanyNameHidden ? string.Empty : company?.EmpFullName,
-                            CompanyLogo = job.IsCompanyNameHidden ? string.Empty : $"https://{Request.Host.Value}/userfiles/{company?.CompanyLogoImage}"
+                            CompanyLogo = job.IsCompanyNameHidden ? string.Empty : company?.CompanyLogoImage
                         });
                     }
                 }

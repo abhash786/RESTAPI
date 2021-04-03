@@ -19,12 +19,14 @@ namespace RManjusha.RestServices.Controllers
         private readonly SeekerProfilesController _seekerProfiles;
         private IWebHostEnvironment _hostingEnvironment;
         private readonly EmployerInfoController employerInfoController;
+        private readonly BlobStorageService storageService;
 
-        public FileUploadController(SeekerProfilesController seekerProfiles, IWebHostEnvironment hostingEnvironment, EmployerInfoController employerInfoController)
+        public FileUploadController(SeekerProfilesController seekerProfiles, IWebHostEnvironment hostingEnvironment, EmployerInfoController employerInfoController, BlobStorageService storageService)
         {
             _seekerProfiles = seekerProfiles;
             _hostingEnvironment = hostingEnvironment;
             this.employerInfoController = employerInfoController;
+            this.storageService = storageService;
         }
 
         [HttpPost, DisableRequestSizeLimit]
@@ -48,23 +50,28 @@ namespace RManjusha.RestServices.Controllers
                     if (System.IO.File.Exists(fullPath))
                         System.IO.File.Delete(fullPath);
 
+                    
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
                         file.CopyTo(stream);
                     }
+                    byte[] bytes = System.IO.File.ReadAllBytes(fullPath);
+                    var storagepath = storageService.UploadFileToBlob(fullPath, bytes, null);
+
                     var filenameParts = fileName.Split("_");
+
                     if (int.TryParse(filenameParts[0], out int id))
                     {
                         if (filenameParts[1].Contains("Resume", System.StringComparison.InvariantCultureIgnoreCase))
                         {
                             var user = _seekerProfiles.GetSeekerProfile(id)?.Result?.Value;
-                            user.ResumeCv = $"https://{Request.Host.Value}/userfiles/{fileName}";
+                            user.ResumeCv = storagepath;
                             await _seekerProfiles.PutSeekerProfile(id, user);
                         }
                         else if (filenameParts[1].Contains("Photo", System.StringComparison.InvariantCultureIgnoreCase))
                         {
                             var user = _seekerProfiles.GetSeekerProfile(id)?.Result?.Value;
-                            user.SeekerImage = $"https://{Request.Host.Value}/userfiles/{fileName}";
+                            user.SeekerImage = storagepath;
                             await _seekerProfiles.PutSeekerProfile(id, user);
                         }
                         else if (filenameParts[1].Contains("logo", System.StringComparison.InvariantCultureIgnoreCase))
@@ -72,7 +79,7 @@ namespace RManjusha.RestServices.Controllers
                             var emp = employerInfoController.GetEmployerInfo(id)?.Result?.Value;
                             if (emp != null)
                             {
-                                emp.CompanyLogoImage = $"https://{Request.Host.Value}/userfiles/{fileName}";
+                                emp.CompanyLogoImage = storagepath;
                                 await employerInfoController.PutEmployerInfo(id, emp);
                             }
                         }

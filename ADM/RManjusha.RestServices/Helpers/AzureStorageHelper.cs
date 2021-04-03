@@ -1,4 +1,6 @@
-﻿using Microsoft.WindowsAzure.Storage.Blob;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,32 +9,90 @@ using System.Threading.Tasks;
 
 namespace RManjusha.RestServices.Helpers
 {
-    public class AzureStorageHelper
+    public class BlobStorageService
     {
-        //public static async Task<string> UploadFileAsync()
-        //{
-        //    string storageConnection = CloudConfigurationManager.GetSetting("BlobStorageConnectionString"); CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(storageConnection);
+        string accessKey = string.Empty;
+        string containerName = string.Empty;
 
-        //    //create a block blob CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+        public BlobStorageService(IConfiguration configuration)
+        {
+            Configuration = configuration;
+            this.accessKey = Configuration["BlobConnections:ConnectionStrings"];
+            this.containerName = Configuration["BlobConnections:ContainerNmae"];
+        }
 
-        //    //create a container CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference("appcontainer");
+    public IConfiguration Configuration { get; }
+    public string UploadFileToBlob(string strFileName, byte[] fileData, string fileMimeType)
+        {
+            try
+            {
 
-        //    //create a container if it is not already exists
+                var _task = Task.Run(() => this.UploadFileToBlobAsync(strFileName, fileData, fileMimeType));
+                _task.Wait();
+                string fileUrl = _task.Result;
+                return fileUrl;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-        //    if (await CloudBlobContainer.CreateIfNotExistsAsync())
-        //    {
+        public async void DeleteBlobData(string fileUrl)
+        {
+            Uri uriObj = new Uri(fileUrl);
+            string BlobName = Path.GetFileName(uriObj.LocalPath);
 
-        //        await cloudBlobContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(accessKey);
+            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+            string strContainerName = "uploads";
+            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(strContainerName);
 
-        //    }
+            string pathPrefix = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd") + "/";
+            CloudBlobDirectory blobDirectory = cloudBlobContainer.GetDirectoryReference(pathPrefix);
+            // get block blob refarence    
+            CloudBlockBlob blockBlob = blobDirectory.GetBlockBlobReference(BlobName);
 
-        //    string imageName = "Test-" + Path.GetExtension(imageToUpload.FileName);
+            // delete blob from container        
+            await blockBlob.DeleteAsync();
+        }
 
-        //    //get Blob reference
 
-        //    CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(imageName); cloudBlockBlob.Properties.ContentType = imageToUpload.ContentType;
+        private string GenerateFileName(string fileName)
+        {
+            string strFileName = string.Empty;
+            string[] strName = fileName.Split('.');
+            strFileName = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd") + "/" + DateTime.Now.ToUniversalTime().ToString("yyyyMMdd\\THHmmssfff") + "." + strName[strName.Length - 1];
+            return strFileName;
+        }
 
-        //    cloudBlockBlob.UploadFromStream(imageToUpload.InputStream);
-        //}
+        private async Task<string> UploadFileToBlobAsync(string strFileName, byte[] fileData, string fileMimeType)
+        {
+            try
+            {
+                CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(accessKey);
+                CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+                CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(containerName);
+                string fileName = this.GenerateFileName(strFileName);
+
+                //if (await cloudBlobContainer.CreateIfNotExistsAsync())
+                //{
+                //    await cloudBlobContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+                //}
+
+                if (fileName != null && fileData != null)
+                {
+                    CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+                    //cloudBlockBlob.Properties.ContentType = fileMimeType;
+                    await cloudBlockBlob.UploadFromByteArrayAsync(fileData, 0, fileData.Length);
+                    return cloudBlockBlob.Uri.AbsoluteUri;
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

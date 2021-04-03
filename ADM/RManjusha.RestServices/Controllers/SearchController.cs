@@ -90,10 +90,6 @@ namespace RManjusha.RestServices.Controllers
                         user.ExperienceDetailSkrs = _context.ExperienceDetails.Where(x => x.SkrCode == user.SkrCode).ToList();
                         user.EducationDetailSkrs = _context.EducationDetails.Where(x => x.SkrCode == user.SkrCode).ToList();
                         user.SeekersSkillsSetSkrs = _context.SeekersSkillsSets.Where(x => x.SkrCode == user.SkrCode).ToList();
-                        //if (user.SeekerImage != null && !user.SeekerImage.Contains("https://"))
-                        //    user.SeekerImage = $"https://{Request.Host.Value}/userfiles/{user.SeekerImage}";
-                        //if (user.ResumeCv != null && !user.ResumeCv.Contains("https://"))
-                        //    user.ResumeCv = $"https://{Request.Host.Value}/userfiles/{user.ResumeCv}";
                     }
                 }
                 response = StatusCode(StatusCodes.Status200OK, new { candidates = output });
