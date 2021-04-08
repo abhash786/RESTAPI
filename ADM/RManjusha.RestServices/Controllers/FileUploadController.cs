@@ -55,8 +55,8 @@ namespace RManjusha.RestServices.Controllers
                     {
                         file.CopyTo(stream);
                     }
-                    byte[] bytes = System.IO.File.ReadAllBytes(fullPath);
-                    var storagepath = storageService.UploadFileToBlob(fullPath, bytes, null);
+                    //byte[] bytes = System.IO.File.ReadAllBytes(fullPath);
+                    //var storagepath = storageService.UploadFileToBlob(fullPath, bytes, null);
 
                     var filenameParts = fileName.Split("_");
 
@@ -65,13 +65,13 @@ namespace RManjusha.RestServices.Controllers
                         if (filenameParts[1].Contains("Resume", System.StringComparison.InvariantCultureIgnoreCase))
                         {
                             var user = _seekerProfiles.GetSeekerProfile(id)?.Result?.Value;
-                            user.ResumeCv = storagepath;
+                            user.ResumeCv = fullPath;
                             await _seekerProfiles.PutSeekerProfile(id, user);
                         }
                         else if (filenameParts[1].Contains("Photo", System.StringComparison.InvariantCultureIgnoreCase))
                         {
                             var user = _seekerProfiles.GetSeekerProfile(id)?.Result?.Value;
-                            user.SeekerImage = storagepath;
+                            user.SeekerImage = fullPath;
                             await _seekerProfiles.PutSeekerProfile(id, user);
                         }
                         else if (filenameParts[1].Contains("logo", System.StringComparison.InvariantCultureIgnoreCase))
@@ -79,7 +79,7 @@ namespace RManjusha.RestServices.Controllers
                             var emp = employerInfoController.GetEmployerInfo(id)?.Result?.Value;
                             if (emp != null)
                             {
-                                emp.CompanyLogoImage = storagepath;
+                                emp.CompanyLogoImage = fullPath;
                                 await employerInfoController.PutEmployerInfo(id, emp);
                             }
                         }

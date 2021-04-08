@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Reflection;
 
 namespace RManjusha.RestServices
 {
@@ -8,6 +10,7 @@ namespace RManjusha.RestServices
     {
         public static void Main(string[] args)
         {
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             CreateHostBuilder(args).Build().Run();
         }
 

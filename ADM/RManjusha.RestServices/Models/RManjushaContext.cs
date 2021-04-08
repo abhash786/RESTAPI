@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 #nullable disable
 
@@ -8,15 +9,17 @@ namespace RManjusha.RestServices.Models
 {
     public partial class RManjushaContext : DbContext
     {
-        public RManjushaContext()
+        public RManjushaContext(IConfiguration configuration)
         {
+            Configuration = configuration;
         }
 
-        public RManjushaContext(DbContextOptions<RManjushaContext> options)
+        public RManjushaContext(DbContextOptions<RManjushaContext> options, IConfiguration configuration)
             : base(options)
         {
+            Configuration = configuration;
         }
-
+        public IConfiguration Configuration { get; }
         public virtual DbSet<BusinessStream> BusinessStreams { get; set; }
         public virtual DbSet<CourseMaster> CourseMasters { get; set; }
         public virtual DbSet<EducationDetail> EducationDetails { get; set; }
@@ -37,7 +40,7 @@ namespace RManjusha.RestServices.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=tcp:rmanjusha.database.windows.net,1433;Initial Catalog=R-manjusha;Persist Security Info=False;User ID=dbadmin;Password=Rmanjusha@2021;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;;MultipleActiveResultSets=True");
+                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("r-manjusha-db"));
             }
         }
 

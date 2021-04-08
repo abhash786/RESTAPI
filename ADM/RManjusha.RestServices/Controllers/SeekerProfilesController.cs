@@ -12,6 +12,7 @@ using RManjusha.RestServices.Securities;
 using RManjusha.RestServices.Interceptors;
 using AutoMapper;
 using RManjusha.RestServices.Exceptions;
+using Microsoft.Extensions.Configuration;
 
 namespace RManjusha.RestServices.Controllers
 {
@@ -25,12 +26,15 @@ namespace RManjusha.RestServices.Controllers
         private readonly JWTHelper _jwtHelper;
         private readonly IMapper _mapper;
 
-        public SeekerProfilesController(RManjushaContext context, SecurityManager manager, JWTHelper jwtHelper, IMapper mapper)
+        public IConfiguration Configuration { get; }
+
+        public SeekerProfilesController(RManjushaContext context, SecurityManager manager, JWTHelper jwtHelper, IMapper mapper, IConfiguration configuration)
         {
             _context = context;
             _securityManager = manager;
             _jwtHelper = jwtHelper;
             _mapper = mapper;
+            Configuration = configuration;
         }
 
         // GET: api/SeekerProfiles
@@ -67,7 +71,7 @@ namespace RManjusha.RestServices.Controllers
                 return BadRequest();
             }
             seekerProfile.Password = _context.SeekerProfiles.AsNoTracking().FirstOrDefault(x => x.SkrId == id).Password;
-            using (var con = new RManjushaContext())
+            using (var con = new RManjushaContext(Configuration))
             {
                 con.Entry(seekerProfile).State = EntityState.Modified;
                 await con.SaveChangesAsync();

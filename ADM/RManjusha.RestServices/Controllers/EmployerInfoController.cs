@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RManjusha.RestServices.Helpers;
 using RManjusha.RestServices.Interceptors;
 using RManjusha.RestServices.Models;
@@ -21,11 +22,14 @@ namespace RManjusha.RestServices.Controllers
         private SecurityManager _securityManager;
         private JWTHelper _jwtHelper;
 
-        public EmployerInfoController(RManjushaContext context, SecurityManager securityManager, JWTHelper jwtHelper)
+        public IConfiguration Configuration { get; }
+
+        public EmployerInfoController(RManjushaContext context, SecurityManager securityManager, JWTHelper jwtHelper, IConfiguration configuration)
         {
             _context = context;
             _securityManager = securityManager;
             _jwtHelper = jwtHelper;
+            Configuration = configuration;
         }
 
         // GET: api/EmployerInfo/5
@@ -59,7 +63,7 @@ namespace RManjusha.RestServices.Controllers
                 employerInfo.Password = emp.Password;
                 employerInfo.CompanyLogoImage = emp.CompanyLogoImage;
             }
-            using (var con = new RManjushaContext())
+            using (var con = new RManjushaContext(Configuration))
             {
                 con.Entry(employerInfo).State = EntityState.Modified;
                 await con.SaveChangesAsync();
