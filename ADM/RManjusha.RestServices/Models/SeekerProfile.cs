@@ -26,17 +26,17 @@ namespace RManjusha.RestServices.Models
         public DateTime? ICatalystRegDate { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public DateTime Dob { get; set; }
+        public DateTime? Dob { get; set; }
         public string Gender { get; set; }
         public bool SkrProfileVisibility { get; set; }
-        public decimal ContactNum { get; set; }
+        public decimal? ContactNum { get; set; }
         public decimal? AltContactNum { get; set; }
         public string SeekerImage { get; set; }
-        public decimal Aadhaar { get; set; }
+        public decimal? Aadhaar { get; set; }
         public string SpokenLanguage { get; set; }
         public string CommAdd { get; set; }
         public string PermAdd { get; set; }
-        public int JobLocationPref { get; set; }
+        public int? JobLocationPref { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }

@@ -10,7 +10,7 @@ namespace RManjusha.RestServices.Models
         public int Id { get; set; }
         public int? SkrId { get; set; }
         public int JobPostingId { get; set; }
-        public DateTime? ApplicantApplyDate { get; set; }
+        public DateTime ApplicantApplyDate { get; set; }
 
         public virtual JobPost JobPosting { get; set; }
         public virtual SeekerProfile Skr { get; set; }

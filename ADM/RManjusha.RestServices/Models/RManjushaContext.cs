@@ -160,6 +160,21 @@ namespace RManjusha.RestServices.Models
                 entity.HasIndex(e => e.EmpCode, "UK_Employer_Profile_EmpCode")
                     .IsUnique();
 
+                entity.HasIndex(e => e.EmpContactNo, "UK_Employer_Profile_empContactNo")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.EmpEmailId, "UK_Employer_Profile_empEmailId")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.EmpGstin, "UK_Employer_Profile_empGSTIN")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.EmpPan, "UK_Employer_Profile_empPAN")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.EmploymentNumber, "UK_Employer_Profile_employmentNumber")
+                    .IsUnique();
+
                 entity.Property(e => e.EmpId)
                     .HasColumnName("empId")
                     .HasDefaultValueSql("(format(getdate(),'yyMMdd')+right('000'+CONVERT([nvarchar](4),NEXT VALUE FOR [dbo].[sequence_Employer]),(4)))");
@@ -250,6 +265,11 @@ namespace RManjusha.RestServices.Models
                 entity.Property(e => e.EmpWebsite)
                     .HasMaxLength(200)
                     .HasColumnName("empWebsite");
+
+                entity.Property(e => e.EmploymentNumber)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("employmentNumber");
 
                 entity.Property(e => e.FbId)
                     .HasMaxLength(200)
@@ -601,17 +621,36 @@ namespace RManjusha.RestServices.Models
 
                 entity.ToTable("seeker_Profile");
 
-                entity.HasIndex(e => e.Aadhaar, "UK_seeker_Profile_aadhaar")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.ContactNum, "UK_seeker_Profile_contactNum")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.Email, "UK_seeker_Profile_email")
-                    .IsUnique();
-
                 entity.HasIndex(e => e.SkrCode, "UK_seeker_Profile_skrCode")
                     .IsUnique();
+
+                entity.HasIndex(e => e.Aadhaar, "idx_UNCI_seeker_Profile_aadhaar")
+                    .IsUnique()
+                    .HasFilter("([aadhaar] IS NOT NULL)");
+
+                entity.HasIndex(e => e.ContactNum, "idx_UNCI_seeker_Profile_contactNum")
+                    .IsUnique()
+                    .HasFilter("([contactNum] IS NOT NULL)");
+
+                entity.HasIndex(e => e.Email, "idx_UNCI_seeker_Profile_email")
+                    .IsUnique()
+                    .HasFilter("([email] IS NOT NULL)");
+
+                entity.HasIndex(e => e.FbId, "idx_UNCI_seeker_Profile_fbid")
+                    .IsUnique()
+                    .HasFilter("([fbid] IS NOT NULL)");
+
+                entity.HasIndex(e => e.InstaId, "idx_UNCI_seeker_Profile_instaid")
+                    .IsUnique()
+                    .HasFilter("([instaid] IS NOT NULL)");
+
+                entity.HasIndex(e => e.LkdnId, "idx_UNCI_seeker_Profile_lkdnid")
+                    .IsUnique()
+                    .HasFilter("([lkdnid] IS NOT NULL)");
+
+                entity.HasIndex(e => e.TwtrId, "idx_UNCI_seeker_Profile_twtrId")
+                    .IsUnique()
+                    .HasFilter("([twtrId] IS NOT NULL)");
 
                 entity.Property(e => e.SkrId)
                     .HasColumnName("skrId")
@@ -626,7 +665,6 @@ namespace RManjusha.RestServices.Models
                     .HasColumnName("altContactNum");
 
                 entity.Property(e => e.CommAdd)
-                    .IsRequired()
                     .HasMaxLength(500)
                     .IsUnicode(false)
                     .HasColumnName("commAdd");
@@ -650,7 +688,6 @@ namespace RManjusha.RestServices.Models
                     .HasColumnName("dob");
 
                 entity.Property(e => e.Email)
-                    .IsRequired()
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("email");
@@ -666,7 +703,6 @@ namespace RManjusha.RestServices.Models
                     .HasColumnName("firstName");
 
                 entity.Property(e => e.Gender)
-                    .IsRequired()
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .HasColumnName("gender")
@@ -758,7 +794,6 @@ namespace RManjusha.RestServices.Models
                 entity.HasOne(d => d.JobLocationPrefNavigation)
                     .WithMany(p => p.SeekerProfiles)
                     .HasForeignKey(d => d.JobLocationPref)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_seeker_Profile_jobLocPref");
 
                 entity.HasOne(d => d.SkrType)

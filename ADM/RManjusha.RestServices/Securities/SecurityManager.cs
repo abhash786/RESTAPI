@@ -20,12 +20,15 @@ namespace RManjusha.RestServices.Helpers
             // Attempt to validate user
             if (Int64.TryParse(user.Username, out long usernameasLong))
             {
-                authUser = DbContext.SeekerProfiles.Where(
-              u => Convert.ToInt64(u.Aadhaar)
-                   == Convert.ToInt64(user.Username)
-                   || Convert.ToInt64(u.ContactNum)
-                   == Convert.ToInt64(user.Username)
-                 ).FirstOrDefault();
+                authUser = DbContext.SeekerProfiles.FirstOrDefault(
+              u => u.Aadhaar != null && u.Aadhaar == usernameasLong);
+                if (authUser == null)
+                {
+                    authUser = DbContext.SeekerProfiles.FirstOrDefault(
+              u => u.ContactNum != null &&
+                   u.ContactNum == usernameasLong
+                 );
+                }
             }
             else
                 authUser = DbContext.SeekerProfiles.Where(

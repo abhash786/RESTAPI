@@ -40,6 +40,7 @@ namespace RManjusha.RestServices.Models
         public string LkdnId { get; set; }
         public string EmpWebsite { get; set; }
         public string EmpAboutUs { get; set; }
+        public string EmploymentNumber { get; set; }
 
         public virtual BusinessStream BusinessStream { get; set; }
         public virtual EmployerTypeMaster EmpType { get; set; }
