@@ -90,15 +90,15 @@ namespace RManjusha.RestServices.Controllers
                 seekerProfile.Dob = new DateTime(1985, 01, 01);
                 var login = new LoginModel()
                 {
-                    Username = seekerProfile.ContactNum != 0 ? seekerProfile.ContactNum.ToString() :
-                    seekerProfile.Aadhaar != 0 ? seekerProfile.Aadhaar.ToString() : seekerProfile.Email,
+                    Username = seekerProfile.ContactNum != null ? seekerProfile.ContactNum.ToString() :
+                    seekerProfile.Aadhaar != null ? seekerProfile.Aadhaar.ToString() : seekerProfile.Email,
                     Password = seekerProfile.Password
                 };
 
-                var user = _context.SeekerProfiles.FirstOrDefault(x => x.ContactNum == seekerProfile.ContactNum ||
-                x.Email == seekerProfile.Email || x.Aadhaar == seekerProfile.Aadhaar);
-                if(user!=null)
-                    throw new Exception("Unable to create employer profile. contact/Email/Aadhar are duplicate");
+                var user = _context.SeekerProfiles.FirstOrDefault(x => (x.ContactNum != null && x.ContactNum == seekerProfile.ContactNum) ||
+                (x.Email != null && x.Email == seekerProfile.Email) || (x.Aadhaar != null && x.Aadhaar == seekerProfile.Aadhaar));
+                if (user != null)
+                    throw new Exception("Unable to create user profile. any one of contact number/Email/Aadhar is duplicate");
 
                 seekerProfile.Password = SimpleEncryptionHelper.Encrypt(seekerProfile.Password);
                 _context.SeekerProfiles.Add(seekerProfile);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,6 @@ using RManjusha.RestServices.Securities;
 
 namespace RManjusha.RestServices.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EducationDetailsController : ControllerBase
@@ -29,10 +29,10 @@ namespace RManjusha.RestServices.Controllers
 
             if (educationDetail == null)
             {
-                return NotFound();
+                return Ok("No Education details found for given user.");
             }
 
-            return Ok(educationDetail);
+            return Ok(new List<EducationDetail>());
         }
 
         // PUT: api/EducationDetails/5

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,6 @@ using RManjusha.RestServices.Securities;
 
 namespace RManjusha.RestServices.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SeekersSkillsSetsController : ControllerBase
@@ -30,7 +30,7 @@ namespace RManjusha.RestServices.Controllers
             {
                 var sSkills = from s in skills
                               from id in _context.SkillsSets
-                              where id.SkillSetId==s.SkillSetId
+                              where id.SkillSetId == s.SkillSetId
                               select new
                               {
                                   s.SkillSet.SkillSetName,
@@ -40,7 +40,7 @@ namespace RManjusha.RestServices.Controllers
                               };
                 return Ok(sSkills);
             }
-            return NotFound();
+            return Ok(new List<SeekersSkillsSet>());
         }
 
         // GET: api/SeekersSkillsSets/5
@@ -100,7 +100,7 @@ namespace RManjusha.RestServices.Controllers
 
                 return CreatedAtAction("GetSeekersSkillsSet", new { id = seekersSkillsSet.Id }, seekersSkillsSet);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -119,7 +119,7 @@ namespace RManjusha.RestServices.Controllers
             {
                 _context.SeekersSkillsSets.Remove(skill);
             }
-         
+
             _context.SaveChanges();
 
             return Ok(true);

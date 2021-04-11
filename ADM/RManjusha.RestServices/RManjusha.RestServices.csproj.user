@@ -11,6 +11,6 @@
     <WebStackScaffolding_DbContextTypeFullName>RManjusha.RestServices.Models.RManjushaContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
     <ShowAllFiles>false</ShowAllFiles>
-    <NameOfLastUsedPublishProfile>D:\GIT\RESTAPI\ADM\RManjusha.RestServices\Properties\PublishProfiles\IISProfile.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>IISProfile</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace RManjusha.RestServices.Controllers
 
             if (exprerienceDetail == null)
             {
-                return NotFound();
+                return Ok(new List<ExperienceDetail>());
             }
 
             return Ok(exprerienceDetail);

@@ -16,16 +16,18 @@ using System.IO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Reflection;
 
 namespace RManjusha.RestServices
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
+            _hostingEnvironment = hostingEnvironment;
             Configuration = configuration;
         }
-
+        private IWebHostEnvironment _hostingEnvironment;
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -40,11 +42,11 @@ namespace RManjusha.RestServices
             services.AddControllers(
                 options =>
                 {
-                   // options.AllowEmptyInputInBodyModelBinding = true;
+                    // options.AllowEmptyInputInBodyModelBinding = true;
                 }).AddNewtonsoftJson(options =>
-    { 
+    {
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-       // options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+        // options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
     }
 );
             JwtSettings settings = GetJwtSettings();
@@ -114,12 +116,15 @@ namespace RManjusha.RestServices
             app.UseRouting();
             app.UseMiddleware<JwtMiddleware>();
             app.UseMiddleware<RequestResponseLoggingMiddleware>();
-            app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions()
+
+            // get the directory
+            var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assetDirectory = Path.Combine(_hostingEnvironment.ContentRootPath, "Upload");
+
+            app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(
-           Path.Combine(Directory.GetCurrentDirectory(), @"Upload")),
-                RequestPath = new PathString("/userfiles")
+                FileProvider = new PhysicalFileProvider(assetDirectory),
+                RequestPath = "/Assets"
             });
             app.UseEndpoints(endpoints =>
             {
