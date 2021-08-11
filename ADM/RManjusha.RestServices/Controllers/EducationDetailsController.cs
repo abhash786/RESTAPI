@@ -29,10 +29,10 @@ namespace RManjusha.RestServices.Controllers
 
             if (educationDetail == null)
             {
-                return Ok("No Education details found for given user.");
+                return Ok(new List<EducationDetail>());
             }
 
-            return Ok(new List<EducationDetail>());
+            return Ok(educationDetail);
         }
 
         // PUT: api/EducationDetails/5

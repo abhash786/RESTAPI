@@ -102,6 +102,8 @@ namespace RManjusha.RestServices.Controllers
             }
             catch (Exception ex)
             {
+                if (ex is DbUpdateException)
+                    return Ok();
                 throw;
             }
         }

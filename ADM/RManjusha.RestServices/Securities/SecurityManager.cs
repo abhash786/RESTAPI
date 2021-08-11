@@ -49,7 +49,7 @@ namespace RManjusha.RestServices.Helpers
             if (Int64.TryParse(user.Username, out long usernameasLong))
             {
                 authUser = DbContext.EmployerProfiles.Where(
-              u => Convert.ToInt64(u.EmpContactPersonNumber)
+              u => Convert.ToInt64(u.EmpContactNo)
                    == Convert.ToInt64(user.Username)
                  ).FirstOrDefault();
             }

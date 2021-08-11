@@ -56,6 +56,8 @@ namespace RManjusha.RestServices.Controllers
                 {
                     jobs = jobs.Where(x =>
                     x.JobPrimarySkill.Contains(input.Keyword) ||
+                    x.JobTitle.Contains(input.Keyword) ||
+                    x.JobDescription.Contains(input.Keyword) ||
                     x.JobSecondarySkill.Contains(input.Keyword));
                 }
                 else
